@@ -1,6 +1,5 @@
 # Password Manager
 Manage and generate your passwords for free!
-This Python program can run on any operating system.
 
 ## Important
 You can contribute to this project!
@@ -14,10 +13,10 @@ You can contribute to this project!
 
 ## Master Password
 The master password is the key which encode/decode your stored passwords.
-Don't share it because it's the only protection you have!
+Don't share it because it's the only protection your passwords have!
 
-## Password's "Name"
-```New password's name``` is asked because it's the name you have to give to your password to identify it (example : GitHub, Microsoft..).
-
-## Running on Android
-To run the program on Android, refer to "android.txt" file for all the instructions!
+## Cross-platform
+For now, this program is only available for Windows and Linux systems.
+Android devices don't support the program because the cryptodome module don't work on them and i guess it's the same for MacOS.
+If you know how to implement a secure cross-platform encoding system, you're welcome to contribute to the repo.
+Contact me at : pistachedevofficiel@gmail.com.

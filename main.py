@@ -1,6 +1,5 @@
 import os
 import encryptor # encryptor.py
-from Crypto.Cipher import AES
 import base64
 import pwdManager # pwdManager.py
 import pwdGenerator # pwdGenerator.py
@@ -8,22 +7,26 @@ import sys
 import os
 import platform
 
-# First launch setup.
+if not os.path.isfile('master.md'):
+    with open('master.md', 'w') as master:
+        master.write('None')
+
+if not os.path.exists('./pwd'):
+    os.mkdir('pwd')
+
+# First (normally) launch setup.
 with open('master.md', 'r') as master:
     if master.read() == 'None':
         setup = input('Create your master password: ')
-        salt = os.urandom(16)
-        key = encryptor.generateValidKey(setup, salt)
-        encoded = encryptor.encryptData(key, setup.encode())
+        salt = os.urandom(16) # Generate a random salt.
+        key = encryptor.generateValidKey(setup, salt) # Generate a key for the encryption.
+        encoded = encryptor.encryptData(key, setup.encode()) # Encode the new master password.
 
-        with open(f'master.md', 'w') as master:
-            master.write(f'{base64.urlsafe_b64encode(salt).decode()}:{encoded}')
-            print('Master password successfuly created!\nDon\'t forget it, because you can\'t reset it and can\'t get your passwords back without it.')
+        with open('master.md', 'w') as master:
+            master.write(f'{base64.urlsafe_b64encode(salt).decode()}:{encoded}') # Write the encoded password in the destination file.
+            print('Master password successfuly created!\nDon\'t loose it, because you can\'t reset and can\'t get your passwords back without the master password.\nYou can change it anytime with the "Change the master password" option!')
             input('Press [Enter] to continue..')
-            os.system('cls' if platform.system() == 'Windows' else 'clear')
-
-if not os.path.exists('./pwd'): # Create the passwords's folder storage.
-    os.mkdir('pwd')
+            os.system('cls' if platform.system() == 'Windows' else 'clear') # Clear the terminal.
 
 while True:
     print('What do you want to do?')
@@ -57,4 +60,4 @@ while True:
             print('Please, try again.', end = '\n\n')
             option = input('Option\'s number: ')
 
-    os.system('cls' if platform.system() == 'Windows' else 'clear')
+    os.system('cls' if platform.system() == 'Windows' else 'clear') # Clear the terminal.
