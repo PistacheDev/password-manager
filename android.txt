@@ -1,4 +1,0 @@
-To use the program on Android, you need an application capable of interpreting (executing) Python code.
-For example, I used “Pydroid 3” to port the program to Android, which allows you to code and execute Python scripts on an Android device.
-Installation link (Google Play Store): https://play.google.com/store/apps/details?id=ru.iiec.pydroid3&hl=fr&pli=1.
-You are free to choose your interpreter software.
