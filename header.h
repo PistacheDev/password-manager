@@ -7,6 +7,7 @@ std::string encode(const std::string input);
 std::string decode(const std::string input);
 bool isNumber(const std::string input);
 bool hasInvalidCharacters(const std::string input);
+bool isEmptyFolder(const std::string path);
 void clearTerminal();
 std::string loginAccount();
 std::string createAccount();

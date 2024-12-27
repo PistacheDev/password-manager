@@ -1,5 +1,7 @@
-// This script is a modified version of this base code for base64 encryption:
-// Reynaldev: https://github.com/Reynaldev/Base64.
+/*
+    This script is a modified version of this base code for base64 encryption:
+    https://github.com/Reynaldev/Base64.
+*/
 
 #include "header.h"
 #include <string>

@@ -4,69 +4,80 @@
 #include <filesystem>
 #include <fstream>
 
-namespace fs = std::filesystem; // Shortcut.
+using namespace std;
 
-std::string loginAccount() // Log in function.
+string loginAccount()
 {
-    std::string account;
-    std::cout << "Account's name: ";
-    std::cin >> account; // Input.
-
-    if (!fs::exists("accounts/" + account + ".md")) // Check if the account exists.
+    if (!filesystem::exists("accounts/") || isEmptyFolder("accounts/"))
     {
-        std::cout << "This account doesn't exist!" << std::endl;
+        cout << "There isn't any account available!";
         return "null";
     };
 
-    std::string password;
-    std::cout << "Password: ";
-    std::cin >> password; // Input.
-    std::ifstream file("accounts/" + account + ".md");
+    bool first = true;
+    cout << "Available accounts: ";
 
-    if (file.is_open()) // Check if the file exists and is opened.
+    for (const auto & file : filesystem::directory_iterator("accounts/")) // List each available account.
     {
-        std::string content;
-        std::getline(file, content); // Read the file's content.
-        file.close(); // Close it.
-        std::string decoded = decode(content); // Decode the password using base64.
+        filesystem::path path(file);
+        if (!first) cout << ", " << path.stem();
+        else cout << path.stem();
+        first = false;
+    };
 
-        if (password == decoded) // If the two passwords match.
+    string account;
+    cout << ".\nUsername: ";
+    cin >> account;
+
+    if (!filesystem::exists("accounts/" + account + ".md"))
+    {
+        cout << "This account doesn't exist!" << endl;
+        return "null";
+    };
+
+    string password;
+    cout << "Password: ";
+    cin >> password;
+    ifstream file("accounts/" + account + ".md");
+
+    if (file.is_open())
+    {
+        string content;
+        getline(file, content); // Read the file's content.
+        file.close();
+        string decoded = decode(content); // Decode the password using base64.
+
+        if (password == decoded)
         {
-            std::cout << "Successfully connected!" << std::endl;
-            return account; // Log in.
-        }
-        else
-        {
-            std::cout << "Incorrect password!" << std::endl;
-            return "null";
+            cout << "Successfully connected!" << endl;
+            return account; // Access granted.
         };
-    }
-    else
-    {
-        std::cout << "Impossible to connect to this account!" << std::endl;
+
+        cout << "Incorrect password!" << endl;
         return "null";
     };
+
+    cout << "Impossible to log into this account!" << endl;
+    return "null";
 };
 
-std::string createAccount() // Create account function.
+string createAccount()
 {
-    if (!fs::exists("accounts"))
-        fs::create_directory("accounts"); // Create the accounts folder if it's missing.
-
-    std::string account;
+    if (!filesystem::exists("accounts")) filesystem::create_directory("accounts"); // Create the accounts folder.
+    string account;
     int loop = 0; // Max attempts.
     bool success = false;
 
     while (loop < 10)
     {
         loop++;
-        std::cout << "Account's name: ";
-        std::cin >> account; // Input.
+        cout << "Username: ";
+        cin >> account;
 
-        if (hasInvalidCharacters(account)) // Check if the input contains any invalid character.
-            std::cout << "Please, enter a valid name!\n" << std::endl;
-        else if (fs::exists("accounts/" + account + ".md")) // Check if the account already exists.
-            std::cout << "This account already exists!\n" << std::endl;
+        if (hasInvalidCharacters(account) || account == "null")
+            cout << "Please, enter a valid name!\n" << endl;
+        else if (filesystem::exists("accounts/" + account + ".md"))
+            cout << "This account already exists!\n" << endl;
         else
         {
             success = true;
@@ -76,107 +87,88 @@ std::string createAccount() // Create account function.
 
     if (!success)
     {
-        std::cout << "Too many fails!\nPress [Enter] to close the program..";
+        cout << "Too many fails!\nPress [Enter] to close the program..";
         return "null";
     };
 
-    std::string password;
-    std::cout << "Password: ";
-    std::cin >> password; // Input.
-    std::string encoded = encode(password); // Encode the password with base64.
-    std::ofstream file("accounts/" + account + ".md"); // Create the file.
+    string password;
+    cout << "Password: ";
+    cin >> password;
+    string encoded = encode(password); // Encode the password with base64.
+    ofstream file("accounts/" + account + ".md"); // Create the account's file.
 
-    if (file.is_open()) // If the file is successfully created and opened.
+    if (file.is_open())
     {
         file << encoded; // Write the encoded password into the file.
         file.close();
-        std::cout << "Account created successfully!" << std::endl;
-        return account; // Automatically log in the user after the account's creation.
-    }
-    else
-    {
-        std::cout << "Impossible to create the account!" << std::endl;
-        return "null";
+        cout << "Account created successfully!" << endl;
+        return account; // Automatically log in the user.
     };
+
+    cout << "The account creation failed!" << endl;
+    return "null";
 };
 
-std::string deleteAccount(std::string account) // Delete account function.
+string deleteAccount(string account)
 {
-    std::cout << "The account's suppression is definitive!" << std::endl;
-    std::cout << "Are you sure that you want to proceed (y/n) ? ";
-    std::string confirmation;
-    std::cin >> confirmation; // Input.
+    cout << "Warning! The account's suppression is definitive!" << endl;
+    cout << "Are you sure that you want to proceed? (y/n) ";
+    string confirmation;
+    cin >> confirmation;
 
-    if (confirmation == "y") // User's confirmation.
+    if (confirmation == "y")
     {
-        if (fs::exists("accounts/" + account + ".md"))
-            fs::remove("accounts/" + account + ".md"); // Delete the account's file.
-        else
-        {
-            std::cout << "Impossible to delete the account because it doesn't exist!" << std::endl;
-            return account;
-        };
-
-        if (fs::exists(account + "/"))
-            fs::remove_all(account + "/"); // Delete every user's passwords.
-
-        std::cout << "Account deleted successfully!" << std::endl;
-        return "null"; // Log out the user.
-    }
-    else
-    {
-        std::cout << "Aborted!" << std::endl;
-        return account; // Maintain the connection.
-    };
-};
-
-std::string editAccountPassword(std::string account) // Edit account's password function.
-{
-    if (!fs::exists("accounts/" + account + ".md"))
-    {
-        std::cout << "This account no longer exists!" << std::endl;
+        if (filesystem::exists("accounts/" + account + ".md")) filesystem::remove("accounts/" + account + ".md"); // Delete the account's file.
+        if (filesystem::exists(account + "/")) filesystem::remove_all(account + "/"); // Delete every user's passwords.
+        cout << "Account deleted successfully!" << endl;
         return "null"; // Log out the user.
     };
 
-    std::string current;
-    std::cout << "Current password: ";
-    std::cin >> current; // Input.
-    std::ifstream file("accounts/" + account + ".md"); // Open the file in read-only mode.
+    cout << "Aborted!" << endl;
+    return account; // Stay logged in.
+};
 
-    if (file.is_open()) // Check if the file is successfully opened.
+string editAccountPassword(string account)
+{
+    if (!filesystem::exists("accounts/" + account + ".md"))
     {
-        std::string content;
-        std::getline(file, content); // Get the file's content.
+        cout << "This account no longer exists!" << endl;
+        return "null"; // Log out the user.
+    };
+
+    string current;
+    cout << "Current password: ";
+    cin >> current;
+    ifstream file("accounts/" + account + ".md"); // Open the file in read-only mode.
+
+    if (file.is_open())
+    {
+        string content;
+        getline(file, content); // Get the file's content.
         file.close();
-        std::string decoded = decode(content); // Decode the password using base64.
+        string decoded = decode(content); // Decode the password using base64.
 
-        if (current == decoded) // If the two passwords match.
+        if (current == decoded)
         {
-            std::string newPassword;
-            std::cout << "New password: ";
-            std::cin >> newPassword; // Input.
-            std::string encoded = encode(newPassword); // Encode the password with base64.
-            std::ofstream file("accounts/" + account + ".md"); // Create the file.
+            string newPassword;
+            cout << "New password: ";
+            cin >> newPassword;
+            string encoded = encode(newPassword); // Encode the password with base64.
+            ofstream file("accounts/" + account + ".md");
 
-            if (file.is_open()) // Check if the file is successfully created and opened.
+            if (file.is_open())
             {
-                file << encoded;
-                std::cout << "Password edited successfully!" << std::endl;
+                file << encoded; // Write the new password into the file.
+                cout << "Password modified successfully!" << endl;
             }
-            else
-                std::cout << "Password's modification failed!" << std::endl;
-
-            return account; // Maintain the connection.
-        }
-        else
-        {
-            std::cout << "Incorrect password!" << std::endl;
-            return "null"; // Log out the user for security reasons.
+            else cout << "The password modification failed!" << endl;
+            return account; // Stay logged in.
         };
-    }
-    else
-    {
-        std::cout << "The password's verification failed!" << std::endl;
-        return account; // Maintain the connection.
+
+        cout << "Incorrect password!" << endl;
+        return "null"; // Log out the user for security reasons.
     };
+
+    cout << "The password verification failed!" << endl;
+    return account; // Stay logged in.
 };
