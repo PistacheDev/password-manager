@@ -2,20 +2,28 @@
 #include <string>
 #include <regex>
 #include <iostream>
+#include <filesystem>
 
-bool isNumber(std::string input) // Check if the input string is a number.
+using namespace std;
+
+bool isNumber(string input)
 {
-    for (char const &character : input) // Check if each character is a digit or noy.
-        if (!std::isdigit(character))
-            return false; // If any of the character isn't a digit, it's not a number.
+    for (char const &character : input)
+        if (!isdigit(character))
+            return false;
 
     return true;
 };
 
-bool hasInvalidCharacters(std::string input) // Check if the input has any invalid charcter.
+bool hasInvalidCharacters(string input)
 {
-    std::regex invalid("[\\\\/:*?\"<>|]"); // Define what characters are invalud.
-    return std::regex_search(input, invalid); // Return true if any invalid character is found in the input.
+    regex invalid("[\\\\/:*?\"<>|]"); // Invalid characters.
+    return regex_search(input, invalid);
+};
+
+bool isEmptyFolder(const std::string path)
+{
+    return filesystem::is_directory(path) && filesystem::directory_iterator(path) == filesystem::directory_iterator(); // Check if the folder is empty or not.
 };
 
 void clearTerminal()
@@ -24,7 +32,7 @@ void clearTerminal()
     std::cin.ignore();
     std::cin.ignore();
 
-    #ifdef _WIN32 // If we're running on Windows.
+    #ifdef _WIN32 // Windows.
         system("cls");
     #else // Linux or MacOS.
         system("clear");

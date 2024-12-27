@@ -6,9 +6,6 @@ You're free to compile the code for any operating system.
 Base code for the base64 encryption: https://github.com/Reynaldev/Base64.
 French version: https://github.com/Rafaleops/Password-Manager.
 
-## Important
-You can contribute to this project!
-
 ## Installation
 1) Download the code.
 2) Check if you have a C++ compiler.

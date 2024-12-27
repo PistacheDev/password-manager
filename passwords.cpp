@@ -4,88 +4,115 @@
 #include <string>
 #include <fstream>
 
-namespace fs = std::filesystem; // Shortcut.
+using namespace std;
 
-void createPassword(std::string account) // Create password function.
+void createPassword(string account)
 {
-    if (!fs::exists(account + "/"))
-        fs::create_directory(account); // Create the user's personnal directory if it's missing.
+    if (!filesystem::exists(account + "/")) filesystem::create_directory(account); // Create the user's personnal directory.
+    string name;
+    cout << "Password's name (example: Google): ";
+    cin >> name;
 
-    std::string name;
-    std::cout << "Password's mame (example: Google): ";
-    std::cin >> name;
-
-    if (fs::exists(account + "/" + name + ".md")) // If the password already exists.
+    if (filesystem::exists(account + "/" + name + ".md")) // If the password already exists.
     {
-        std::string confirmation;
-        std::cout << "This password already exists!\nDo you want to overwrite the current data? (y/n) ";
-        std::cin >> confirmation; // Input.
+        string confirmation;
+        cout << "This password already exists!\nDo you want to overwrite it? (y/n) ";
+        cin >> confirmation;
 
         if (confirmation != "y")
         {
-            std::cout << "Aborted!" << std::endl;
+            cout << "Aborted!" << endl;
             return;
         };
     };
 
-    std::string password;
-    std::cout << "Password: ";
-    std::cin >> password; // Input.
-    std::string encoded = encode(password); // Encode the password with base64.
-    std::ofstream file(account + "/" + name + ".md"); // Create the file.
+    string password;
+    cout << "Password: ";
+    cin >> password;
+    string encoded = encode(password); // Encode the password with base64.
+    ofstream file(account + "/" + name + ".md"); // Create the file.
 
-    if (file.is_open()) // Check if the file is successfully created and opened.
+    if (file.is_open())
     {
         file << encoded; // Write the encoded password into the file.
         file.close();
-        std::cout << "The password called \"" << name << "\" has been created successfully!" << std::endl;
+        cout << "The password \"" << name << "\" has been created successfully!" << endl;
     }
-    else
-        std::cout << "Password's creation failed!" << std::endl;
+    else cout << "The file's creation failed!" << endl;
 };
 
-void showPassword(std::string account) // Show password function.
+void showPassword(string account)
 {
-    if (!fs::exists(account + "/")) // If the user's personnal folder doesn't exist.
+    if (!filesystem::exists(account + "/") || isEmptyFolder(account + "/"))
     {
-        std::cout << "There isn't any password available for this account!" << std::endl;
+        cout << "There isn't any password available for this account!";
         return;
     };
 
-    std::string password;
-    std::cout << "Password to show: ";
-    std::cin >> password; // Input.
+    bool first = true;
+    cout << "Available passwords: ";
 
-    if (fs::exists(account + "/" + password + ".md"))
+    for (const auto & file : filesystem::directory_iterator(account + "/")) // List each available password.
     {
-        std::string content;
-        std::ifstream file(account + "/" + password + ".md"); // Open the file in read-only mode.
-        std::getline(file, content); // Get the file's content.
+        filesystem::path path(file);
+        if (!first) cout << ", " << path.stem();
+        else cout << path.stem();
+        first = false;
+    };
+
+    string password;
+    cout << ".\nPassword to show: ";
+    cin >> password;
+
+    if (filesystem::exists(account + "/" + password + ".md"))
+    {
+        string content;
+        ifstream file(account + "/" + password + ".md"); // Open the file in read-only mode.
+        getline(file, content); // Get the file's content.
         file.close();
-        std::string decoded = decode(content); // Decode the password using base64.
-        std::cout << "Password " << password << " : " << decoded << "." << std::endl;
+        string decoded = decode(content); // Decode the password using base64.
+        cout << "Password \"" << password << "\": " << decoded << "." << endl;
     }
-    else
-        std::cout << "This password doesn't exist!" << std::endl;
+    else cout << "This password doesn't exist!" << endl;
 };
 
-void removePassword(std::string account) // Delete password function.
+void removePassword(string account)
 {
-    if (!fs::exists(account + "/")) // If the user's personnal folder doesn't exist.
+    if (!filesystem::exists(account + "/") || isEmptyFolder(account + "/"))
     {
-        std::cout << "This account doesn't have any password!";
+        cout << "This account doesn't have any password!";
         return;
     };
 
-    std::string password;
-    std::cout << "Password to delete: ";
-    std::cin >> password; // Input.
+    bool first = true;
+    cout << "Available passwords: ";
 
-    if (fs::exists(account + "/" + password + ".md")) // If the file exists.
+    for (const auto & file : filesystem::directory_iterator(account + "/")) // List each available password.
     {
-        fs::remove(account + "/" + password + ".md"); // Delete the file.
-        std::cout << "Password removed successfully!" << std::endl;
+        filesystem::path path(file);
+        if (!first) cout << ", " << path.stem();
+        else cout << path.stem();
+        first = false;
+    };
+
+    string password;
+    cout << ".\nPassword to delete: ";
+    cin >> password;
+
+    if (filesystem::exists(account + "/" + password + ".md")) // If the file exists.
+    {
+        string confirmation;
+        cout << "Are you sure that you want to delete this password? (y/n) ";
+        cin >> confirmation;
+
+        if (confirmation != "y")
+        {
+            cout << "Aborted!" << endl;
+            return;
+        };
+
+        filesystem::remove(account + "/" + password + ".md"); // Delete the file.
+        cout << "Password deleted successfully!" << endl;
     }
-    else
-        std::cout << "This password doesn't exist!" << std::endl;
+    else cout << "This password doesn't exist!" << endl;
 };
