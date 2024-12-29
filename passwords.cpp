@@ -21,7 +21,7 @@ void createPassword(string account)
 
         if (confirmation != "y")
         {
-            cout << "Aborted!" << endl;
+            cout << "Aborted!";
             return;
         };
     };
@@ -36,9 +36,9 @@ void createPassword(string account)
     {
         file << encoded; // Write the encoded password into the file.
         file.close();
-        cout << "The password \"" << name << "\" has been created successfully!" << endl;
+        cout << "The password \"" << name << "\" has been created successfully!";
     }
-    else cout << "The file's creation failed!" << endl;
+    else cout << "The file's creation failed!";
 };
 
 void showPassword(string account)
@@ -71,9 +71,9 @@ void showPassword(string account)
         getline(file, content); // Get the file's content.
         file.close();
         string decoded = decode(content); // Decode the password using base64.
-        cout << "Password \"" << password << "\": " << decoded << "." << endl;
+        cout << "Password \"" << password << "\": " << decoded << ".";
     }
-    else cout << "This password doesn't exist!" << endl;
+    else cout << "This password doesn't exist!";
 };
 
 void removePassword(string account)
@@ -107,12 +107,12 @@ void removePassword(string account)
 
         if (confirmation != "y")
         {
-            cout << "Aborted!" << endl;
+            cout << "Aborted!";
             return;
         };
 
         filesystem::remove(account + "/" + password + ".md"); // Delete the file.
-        cout << "Password deleted successfully!" << endl;
+        cout << "Password deleted successfully!";
     }
-    else cout << "This password doesn't exist!" << endl;
+    else cout << "This password doesn't exist!";
 };

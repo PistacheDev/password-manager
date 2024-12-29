@@ -16,5 +16,6 @@ std::string editAccountPassword(const std::string account);
 void createPassword(const std::string account);
 void removePassword(const std::string account);
 void showPassword(const std::string account);
+void passwordGenerator();
 
 #endif

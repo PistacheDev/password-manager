@@ -31,7 +31,7 @@ string loginAccount()
 
     if (!filesystem::exists("accounts/" + account + ".md"))
     {
-        cout << "This account doesn't exist!" << endl;
+        cout << "This account doesn't exist!";
         return "null";
     };
 
@@ -49,15 +49,15 @@ string loginAccount()
 
         if (password == decoded)
         {
-            cout << "Successfully connected!" << endl;
+            cout << "Successfully connected!";
             return account; // Access granted.
         };
 
-        cout << "Incorrect password!" << endl;
+        cout << "Incorrect password!";
         return "null";
     };
 
-    cout << "Impossible to log into this account!" << endl;
+    cout << "Impossible to log into this account!";
     return "null";
 };
 
@@ -75,9 +75,9 @@ string createAccount()
         cin >> account;
 
         if (hasInvalidCharacters(account) || account == "null")
-            cout << "Please, enter a valid name!\n" << endl;
+            cout << "Please, enter a valid name!";
         else if (filesystem::exists("accounts/" + account + ".md"))
-            cout << "This account already exists!\n" << endl;
+            cout << "This account already exists!";
         else
         {
             success = true;
@@ -101,11 +101,11 @@ string createAccount()
     {
         file << encoded; // Write the encoded password into the file.
         file.close();
-        cout << "Account created successfully!" << endl;
+        cout << "Account created successfully!";
         return account; // Automatically log in the user.
     };
 
-    cout << "The account creation failed!" << endl;
+    cout << "The account creation failed!";
     return "null";
 };
 
@@ -120,11 +120,11 @@ string deleteAccount(string account)
     {
         if (filesystem::exists("accounts/" + account + ".md")) filesystem::remove("accounts/" + account + ".md"); // Delete the account's file.
         if (filesystem::exists(account + "/")) filesystem::remove_all(account + "/"); // Delete every user's passwords.
-        cout << "Account deleted successfully!" << endl;
+        cout << "Account deleted successfully!";
         return "null"; // Log out the user.
     };
 
-    cout << "Aborted!" << endl;
+    cout << "Aborted!";
     return account; // Stay logged in.
 };
 
@@ -132,7 +132,7 @@ string editAccountPassword(string account)
 {
     if (!filesystem::exists("accounts/" + account + ".md"))
     {
-        cout << "This account no longer exists!" << endl;
+        cout << "This account no longer exists!";
         return "null"; // Log out the user.
     };
 
@@ -159,16 +159,16 @@ string editAccountPassword(string account)
             if (file.is_open())
             {
                 file << encoded; // Write the new password into the file.
-                cout << "Password modified successfully!" << endl;
+                cout << "Password modified successfully!";
             }
-            else cout << "The password modification failed!" << endl;
+            else cout << "The password modification failed!";
             return account; // Stay logged in.
         };
 
-        cout << "Incorrect password!" << endl;
+        cout << "Incorrect password!";
         return "null"; // Log out the user for security reasons.
     };
 
-    cout << "The password verification failed!" << endl;
+    cout << "The password verification failed!";
     return account; // Stay logged in.
 };
