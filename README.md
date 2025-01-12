@@ -1,5 +1,5 @@
 # Password Manager
-Manage your passwords easily and for free! !
+Manage your passwords easily and for free!
 You're free to compile the code for any operating system.
 
 ## Credits
