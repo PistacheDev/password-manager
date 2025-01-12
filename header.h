@@ -2,20 +2,21 @@
 #define HEADER_H
 
 #include <string>
+using namespace std;
 
-std::string encode(const std::string input);
-std::string decode(const std::string input);
-bool isNumber(const std::string input);
-bool hasInvalidCharacters(const std::string input);
-bool isEmptyFolder(const std::string path);
+string encode(const string input);
+string decode(const string input);
+bool isNumber(const string input);
+bool hasInvalidCharacters(const string input);
+bool isEmptyFolder(const string path);
 void clearTerminal();
-std::string loginAccount();
-std::string createAccount();
-std::string deleteAccount(const std::string account);
-std::string editAccountPassword(const std::string account);
-void createPassword(const std::string account);
-void removePassword(const std::string account);
-void showPassword(const std::string account);
+string loginAccount();
+string createAccount();
+string deleteAccount(const string account);
+string editAccountPassword(const string account);
+void createPassword(const string account);
+void removePassword(const string account);
+void showPassword(const string account);
 void passwordGenerator();
 
 #endif

@@ -28,9 +28,9 @@ bool isEmptyFolder(const std::string path)
 
 void clearTerminal()
 {
-    std::cout << "\nPress [Enter] to continue.. ";
-    std::cin.ignore();
-    std::cin.ignore();
+    cout << "\nPress [Enter] to continue.. ";
+    cin.ignore();
+    cin.ignore();
 
     #ifdef _WIN32 // Windows.
         system("cls");
